@@ -17,27 +17,30 @@ root = xml.getroot()
 # print(root.tag)
 # print(root.attrib)
 target_date = root.attrib['begin-date']
+table = []
 tags = []
-attribs = []
 for z in root.getchildren():
-    tags.append(z.tag)
+    table.append(z.tag.replace('-', '_'))
     for x in z.getchildren():
-        if x.attrib.keys() not in attribs:
-            attribs.append(x.attrib.keys())
+        if x.attrib.keys() not in tags:
+            tags.append(x.attrib.keys())
+print(table)
 print(tags)
-print(attribs)
-for i in range(len(tags)-1):
+for i in range(len(table)-1):
     attrib = []
     for a in root.getchildren():
         for b in a.getchildren():
             q = {**b.attrib}
-            if a.tag == tags[i-1]:
+            if a.tag.replace('-', '_') == table[i-1]:
                 attrib.append(q)
 
-    df = pd.DataFrame(attrib, columns=attribs[i-1])
+    df = pd.DataFrame(attrib, columns=tags[i-1])
+    df.rename(columns = lambda x: x.replace('-', '_'), inplace=True)
     df.insert(0, 'target_date', target_date)
-    path_e = 'C:/develop/python/load_crm/rio_' + tags[i-1] + '.xlsx'
+    df['target_date'] = pd.to_datetime(df['target_date'], format='%Y%m%d')
+    path_e = 'C:/develop/python/load_crm/rio_' + table[i-1] + '.xlsx'
     df.to_excel(path_e, index=False)
+    df.to_sql(table[i-1], conn, 'mfo_br', if_exists='replace', index=False, chunksize=200)
 
 print(round(time()-time_start,2), 'sec')
 conn.close()
