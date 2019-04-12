@@ -16,6 +16,7 @@ xml = objectify.parse(open(path), parser=parser)
 root = xml.getroot()
 # print(root.tag)
 # print(root.attrib)
+target_date = root.attrib['begin-date']
 tags = []
 attribs = []
 for z in root.getchildren():
@@ -23,20 +24,19 @@ for z in root.getchildren():
     for x in z.getchildren():
         if x.attrib.keys() not in attribs:
             attribs.append(x.attrib.keys())
-
+print(tags)
+print(attribs)
 for i in range(len(tags)-1):
     attrib = []
     for a in root.getchildren():
-        # print(a.tag)
-        # print(a.attrib)
         for b in a.getchildren():
-            # print(b.tag)
-            # print(b.attrib)
             q = {**b.attrib}
             if a.tag == tags[i-1]:
                 attrib.append(q)
+
     df = pd.DataFrame(attrib, columns=attribs[i-1])
-    path_e = 'C:/develop/python/load_crm/rio' + tags[i-1] + '.xlsx'
+    df.insert(0, 'target_date', target_date)
+    path_e = 'C:/develop/python/load_crm/rio_' + tags[i-1] + '.xlsx'
     df.to_excel(path_e, index=False)
 
 print(round(time()-time_start,2), 'sec')
