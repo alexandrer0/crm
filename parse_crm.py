@@ -48,16 +48,25 @@ root = xml.getroot()
 # print(root.tag)
 # print(root.attrib)
 zz = []
+xx = []
+yy = []
 for z in root.getchildren():
     zz.append(z.tag)
+    for x in z.getchildren():
+        xx = (x.attrib.keys())
+        for y in x.getchildren():
+            yy.append(y.attrib)
+
 print(zz)
+print(xx)
+print(yy)
 
 for a in root.getchildren():
     print(a.tag)
     print(a.attrib)
     for b in a.getchildren():
-        print(b.tag)
-        print(b.attrib)
+        # print(b.tag)
+        # print(b.attrib)
         q = {**b.attrib}
         if a.tag == 'region':
             region.append(q)
