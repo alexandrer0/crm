@@ -25,6 +25,7 @@ for z in root.getchildren():
         if x.attrib.keys() not in tags:
             # Формируем список из списков тэгов
             tags.append(x.attrib.keys())
+
 # print(table)
 # print(tags)
 for i in range(len(table)-1):
